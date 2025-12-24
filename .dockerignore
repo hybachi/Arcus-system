@@ -1,0 +1,19 @@
+# Exclude common unnecessary files
+.git
+.gitignore
+README.md
+
+# Build artifacts
+build/
+install/
+log/
+*.pyc
+__pycache__/
+
+# IDE files
+.vscode/
+.idea/
+
+# Large data files
+*.bag
+*.db

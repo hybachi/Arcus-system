@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<library path="libarcus_controllers">
+  <class 
+    name="arcus_controllers/AckermannController"
+    type="arcus_controllers::AckermannController"
+    base_class_type="controller_interface::ControllerInterface"
+  >
+    <description>Steering controller for Ackermann Drive robots</description>
+  </class>
+</library>
