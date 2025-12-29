@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<library path="libarcus_hardware">
+<library path="arcus_hardware">
   <class 
-    name="arcus_hardware/VescHardware"
-    type="arcus_hardware::VescHardware"
+    name="arcus_hardware/VESCInterface"
+    type="arcus_hardware::VESCInterface"
     base_class_type="hardware_interface::SystemInterface"
   >
     <description>VESC Hardware Interface</description>

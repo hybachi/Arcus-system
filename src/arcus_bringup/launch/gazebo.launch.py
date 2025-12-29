@@ -46,7 +46,7 @@ def generate_launch_description():
         output='screen',
         parameters=[{
             'robot_description': ParameterValue(
-                Command(['xacro ', xacro_path]),
+                Command(['xacro ', xacro_path, ' use_sim:=true']),
                 value_type=str
             )
         }]

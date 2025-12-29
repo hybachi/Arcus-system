@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<library path="libarcus_controllers">
+<library path="arcus_controllers">
   <class 
     name="arcus_controllers/AckermannController"
     type="arcus_controllers::AckermannController"

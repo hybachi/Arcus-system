@@ -253,7 +253,7 @@ bool test_motor_control(const std::string &port, int baud_rate, bool skip_motor,
                              { latest_state = state; });
 
     std::cout << "\nTesting current control (12A)..." << std::endl;
-    vesc->set_current(12.0);
+    vesc->set_servo_position(50.0);
 
     for (int i = 0; i < 100; i++)
     {
@@ -266,7 +266,7 @@ bool test_motor_control(const std::string &port, int baud_rate, bool skip_motor,
     print_vesc_state(latest_state);
 
     std::cout << "\nStopping motor..." << std::endl;
-    vesc->set_current(0.0);
+    vesc->set_servo_position(0.0);
     std::this_thread::sleep_for(std::chrono::seconds(1));
 
     std::cout << "✓ Motor control test complete" << std::endl;

@@ -3,8 +3,18 @@
   
   <xacro:include filename="robot_core.xacro" />
   <xacro:include filename="gz_ros2_control.xacro" />
+  <xacro:include filename="hw_ros2_control.xacro"/>
+
+  <xacro:arg name="use_sim" default="true"/>
 
   <xacro:arcus prefix="arcus_" />
-  <xacro:gz_ros2_control prefix="arcus_" />
+  
+  <xacro:if value="$(arg use_sim)">
+    <xacro:gz_ros2_control prefix="arcus_" />
+  </xacro:if>
+
+  <xacro:unless value="$(arg use_sim)">
+    <xacro:vesc_ros2_control prefix="arcus_" />
+  </xacro:unless>
 
 </robot>
