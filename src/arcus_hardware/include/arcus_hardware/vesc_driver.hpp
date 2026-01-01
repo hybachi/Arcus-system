@@ -20,7 +20,7 @@ namespace arcus_hardware
         COMM_SET_CURRENT = 6,
         COMM_SET_CURRENT_BRAKE = 7,
         COMM_SET_RPM = 8,
-        COMM_SET_POS = 9,
+        COMM_SET_SERVO_POS = 12,
         COMM_ALIVE = 30,
         COMM_GET_DECODED_PPM = 11,
         COMM_GET_DECODED_ADC = 12,
@@ -62,7 +62,7 @@ namespace arcus_hardware
         void set_current(double current);
         void set_brake_current(double current);
         void set_rpm(int32_t rpm);
-        void set_position(double position_deg);
+        void set_servo_position(double position_deg);
         void request_state();
         void send_alive();
 

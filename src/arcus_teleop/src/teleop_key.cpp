@@ -11,7 +11,7 @@ public:
     TeleopKeyboard() : Node("teleop_keyboard")
     {
         // Declare parameters
-        this->declare_parameter<double>("max_speed", 2.0);
+        this->declare_parameter<double>("max_speed", 1.0);
         this->declare_parameter<double>("max_steering_angle", 0.5); // rad
         this->declare_parameter<double>("speed_increment", 0.2);
         this->declare_parameter<double>("steering_increment", 0.1);

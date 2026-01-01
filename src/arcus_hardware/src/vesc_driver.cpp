@@ -133,13 +133,13 @@ namespace arcus_hardware
     }
 
     // Set servo position (I hope)
-    void VESCDriver::set_position(double position_deg)
+    void VESCDriver::set_servo_position(double position_deg)
     {
         if (!is_connected_)
             return;
 
         std::vector<uint8_t> payload;
-        payload.push_back(static_cast<uint8_t>(VESCCommand::COMM_SET_POS));
+        payload.push_back(static_cast<uint8_t>(VESCCommand::COMM_SET_SERVO_POS));
 
         // Position is sent as int32 (position * 1000000)
         int32_t pos_int = static_cast<int32_t>(position_deg * 1000000.0);
