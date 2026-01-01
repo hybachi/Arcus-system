@@ -61,13 +61,15 @@ namespace arcus_hardware
         std::unique_ptr<VESCDriver> vesc_;
         rclcpp::Logger logger_{rclcpp::get_logger("arcus_hardware.VESCInterface")};
 
-        // ---- Configuration (ros2_control hardware_parameters) ----
+        // ---- Configuration ----
         std::string port_{"/dev/ttyACM0"};
         int baud_rate_{115200};
 
-        // Wheel(rad/s) -> ERPM conversion
+        // Drive
         int pole_pairs_{7};
         double gear_ratio_{1.0}; // motor_rot / wheel_rot
+        int min_erpm_{2500};
+        int max_erpm_{5000};
 
         // Steering mapping
         double steering_center_deg_{90.0};          // servo center position (deg)
@@ -76,10 +78,9 @@ namespace arcus_hardware
 
         // Safety / comms
         double cmd_timeout_s_{0.5};
-        bool alternate_drive_steer_{true};
         int alive_every_n_{50};
 
-        // ---- Joint indices (AckermannController contract) ----
+        // ---- Joint indices ----
         int drive_joint_idx_{-1}; // rear_left_wheel_joint
         int steer_left_idx_{-1};  // front_left_steering_joint
         int steer_right_idx_{-1}; // front_right_steering_joint
@@ -88,7 +89,7 @@ namespace arcus_hardware
         std::string steer_left_joint_name_;
         std::string steer_right_joint_name_;
 
-        // ---- Interface storage (1 value per joint) ----
+        // ---- Interface storage ----
         std::vector<double> hw_positions_;
         std::vector<double> hw_velocities_;
         std::vector<double> hw_efforts_;
@@ -102,11 +103,8 @@ namespace arcus_hardware
         VESCState last_state_{};
         bool have_state_{false};
 
-        // timeout tracking
+        // tracking
         rclcpp::Time last_cmd_time_{0, 0, RCL_STEADY_TIME};
-
-        // internal alternation / heartbeat
-        bool send_drive_next_{true};
         int alive_ctr_{0};
     };
 

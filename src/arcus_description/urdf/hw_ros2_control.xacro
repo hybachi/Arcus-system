@@ -10,10 +10,12 @@
         <plugin>arcus_hardware/VESCInterface</plugin>
 
         <!-- VESC connection -->
-        <param name="port">/dev/ttyACM1</param>
+        <param name="port">/dev/ttyACM0</param>
         <param name="baud_rate">115200</param>
         <param name="pole_pairs">7</param>
         <param name="gear_ratio">2.0</param>
+        <param name="min_erpm">2500</param>
+        <param name="max_erpm">5000</param>
 
         <!-- Steering mapping -->
         <param name="steering_center_deg">0.0</param>
@@ -22,7 +24,6 @@
 
         <!-- Safety -->
         <param name="cmd_timeout_s">0.5</param>
-        <param name="alternate_drive_steer">false</param>
         <param name="alive_every_n">50</param>
 
         <!-- Joint names (prefix-safe) -->

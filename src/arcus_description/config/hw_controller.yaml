@@ -18,5 +18,5 @@ ackermann_controller:
     wheel_radius: 0.04
     wheel_base: 0.255
     max_steering_angle: 0.4
-    max_speed: 5.0
+    max_speed: 1.0
     cmd_timeout: 0.5

@@ -106,23 +106,6 @@ namespace arcus_controllers
 
     controller_interface::return_type AckermannController::update(const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
     {
-        // time_since_last_cmd_ += period;
-
-        // if (new_cmd_received_)
-        // {
-        //     time_since_last_cmd_ = rclcpp::Duration::from_seconds(0.0);
-        //     new_cmd_received_ = false;
-        // }
-
-        // if (time_since_last_cmd_.seconds() > cmd_timeout_)
-        // {
-        //     set_cmd(drive_cmd_, 0.0);
-        //     set_cmd(steering_left_cmd_, 0.0);
-        //     set_cmd(steering_right_cmd_, 0.0);
-
-        //     return controller_interface::return_type::OK;
-        // }
-
         double speed = std::clamp(static_cast<double>(current_cmd_.speed), -max_speed_, max_speed_);
         double steering_angle = std::clamp(static_cast<double>(current_cmd_.steering_angle), -max_steering_angle_, max_steering_angle_);
         double wheel_velocity = speed / wheel_radius_;
