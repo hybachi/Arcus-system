@@ -1,12 +1,14 @@
 {
-	"name": "osrf/ros:jazzy-desktop-full",
+	"name": "Arcus ROS2 Jazzy",
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
 	"runArgs": [
+		"--name=ros2_arcus", // Name of the docker container
+		"--device=/dev/sensors", // Gives the container access to specified ports
 		"--network=host", // Shares the host's network namespace with the container
 		"--privileged", // Gives the container full access to the host's devices and allows it to run with root privileges
-		
+
 		// Nvidia GPU configuration
 		"--gpus",
 		"all",
@@ -16,10 +18,10 @@
 		"--env",
 		"NVIDIA_VISIBLE_DEVICES=all",
 		"--env",
-		"XDG_RUNTIME_DIR=/tmp/runtime-root",
-		"--device=/dev/ttyACM0"
+		"XDG_RUNTIME_DIR=/tmp/runtime-root"
 	],
 	"workspaceFolder": "/home/arcus_ws",
+	"postCreateCommand": "bash -lc 'source /opt/ros/jazzy/setup.bash && cd /home/arcus_ws && rosdep install --from-paths src --ignore-src -r -y && colcon build'",
 	"workspaceMount": "source=${localWorkspaceFolder},target=/home/arcus_ws,type=bind",
 	"containerEnv": {
 		"DISPLAY": "${localEnv:DISPLAY}",
