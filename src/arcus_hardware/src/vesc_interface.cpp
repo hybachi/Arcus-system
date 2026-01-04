@@ -27,9 +27,10 @@ namespace arcus_hardware
         min_erpm_ = std::stoi(info_.hardware_parameters.at("min_erpm"));
         max_erpm_ = std::stoi(info_.hardware_parameters.at("max_erpm"));
 
-        steering_center_deg_ = std::stod(info.hardware_parameters.at("steering_center_deg"));
+        servo_center_deg_ = std::stod(info.hardware_parameters.at("servo_center_deg_"));
         steering_deg_per_rad_ = std::stod(info.hardware_parameters.at("steering_deg_per_rad"));
-        max_steering_angle_rad_ = std::stod(info.hardware_parameters.at("max_steering_angle_rad"));
+        max_servo_angle_deg_ = std::stod(info.hardware_parameters.at("max_servo_angle_deg_"));
+        min_servo_angle_deg_ = std::stod(info.hardware_parameters.at("min_servo_angle_deg_"));
 
         cmd_timeout_s_ = std::stod(info.hardware_parameters.at("cmd_timeout_s"));
         alive_every_n_ = std::stoi(info.hardware_parameters.at("alive_every_n"));
@@ -148,7 +149,7 @@ namespace arcus_hardware
 
         vesc_->set_brake_current(0.0);
         vesc_->set_rpm(0);
-        vesc_->set_servo_position(steering_center_deg_);
+        vesc_->set_servo_position(servo_center_deg_);
 
         std::fill(cmd_positions_.begin(), cmd_positions_.end(), 0.0);
         std::fill(cmd_velocities_.begin(), cmd_velocities_.end(), 0.0);
@@ -167,7 +168,7 @@ namespace arcus_hardware
         if (vesc_ && vesc_->is_connected())
         {
             vesc_->set_rpm(0);
-            vesc_->set_servo_position(steering_center_deg_);
+            vesc_->set_servo_position(servo_center_deg_);
             vesc_->disconnect();
         }
         return hardware_interface::CallbackReturn::SUCCESS;
@@ -214,6 +215,7 @@ namespace arcus_hardware
         if (!drive_active && !steer_active)
         {
             vesc_->set_brake_current(BRAKE_CURRENT);
+            vesc_->set_servo_position(servo_center_deg_);
             return hardware_interface::return_type::OK;
         }
 
@@ -223,6 +225,7 @@ namespace arcus_hardware
         if ((time - last_cmd_time_).seconds() > cmd_timeout_s_)
         {
             vesc_->set_brake_current(BRAKE_CURRENT);
+            vesc_->set_servo_position(servo_center_deg_);
             return hardware_interface::return_type::OK;
         }
 
@@ -230,8 +233,22 @@ namespace arcus_hardware
         if (steer_active)
         {
             const double steer_rad = 0.5 * (steer_l + steer_r);
-            const double clamped_steer = clamp(steer_rad, -max_steering_angle_rad_, max_steering_angle_rad_);
-            const double servo_deg = steering_center_deg_ + clamped_steer * steering_deg_per_rad_;
+            const double MAX_STEER_RAD = 1.0;
+
+            // Clamp in RADIANS (controller space)
+            const double steer_clamped = std::clamp(steer_rad, -MAX_STEER_RAD, MAX_STEER_RAD);
+
+            // Normalize to [-1, 1]
+            double ratio = steer_clamped / MAX_STEER_RAD; // -1..1
+
+            // Map ratio -> servo degrees [0..60]
+            double servo_deg = min_servo_angle_deg_ +
+                               (ratio + 1.0) * 0.5 * (max_servo_angle_deg_ - min_servo_angle_deg_);
+
+            servo_deg = std::clamp(servo_deg, min_servo_angle_deg_, max_servo_angle_deg_);
+
+            RCLCPP_INFO(logger_, "steer=%.3f (clamped %.3f) ratio=%.2f servo_deg=%.2f",
+                        steer_rad, steer_clamped, ratio, servo_deg);
 
             vesc_->set_servo_position(servo_deg);
         }

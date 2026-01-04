@@ -72,9 +72,10 @@ namespace arcus_hardware
         int max_erpm_{5000};
 
         // Steering mapping
-        double steering_center_deg_{90.0};          // servo center position (deg)
+        double servo_center_deg_{90.0};             // servo center position (deg)
         double steering_deg_per_rad_{57.295779513}; // 180/pi
-        double max_steering_angle_rad_{0.5};        // clamp (rad)
+        double max_servo_angle_deg_{180};
+        double min_servo_angle_deg_{0};
 
         // Safety / comms
         double cmd_timeout_s_{0.5};

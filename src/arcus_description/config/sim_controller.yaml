@@ -13,7 +13,7 @@ ackermann_controller:
     drive_wheel: "arcus_rear_left_wheel_joint"
     steering_left_wheel: "arcus_front_left_steering_joint"
     steering_right_wheel: "arcus_front_right_steering_joint"
-    use_dual_steering: false
+    use_dual_steering: true
     track_width: 0.16
     wheel_radius: 0.04
     wheel_base: 0.255
