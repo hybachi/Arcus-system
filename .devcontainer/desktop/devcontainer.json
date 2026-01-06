@@ -1,7 +1,7 @@
 {
   "name": "Arcus ROS2 Jazzy (Desktop)",
   "build": {
-    "dockerfile": "../../Dockerfile",
+    "dockerfile": "../Dockerfile",
     "target": "desktop"
   },
   "runArgs": [
