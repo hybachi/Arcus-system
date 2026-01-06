@@ -1,0 +1,40 @@
+{
+  "name": "Arcus ROS2 Jazzy (Jetson)",
+  "build": {
+    "dockerfile": "../../Dockerfile",
+    "target": "jetson"
+  },
+  "runArgs": [
+    "--name=ros2_arcus_jetson",
+    "--network=host",
+    "--device=/dev/sensors",
+    "--privileged",
+
+    "--gpus",
+    "all",
+    "--runtime=nvidia",
+    "--env",
+    "NVIDIA_DRIVER_CAPABILITIES=all",
+    "--env",
+    "NVIDIA_VISIBLE_DEVICES=all",
+    "--env",
+    "XDG_RUNTIME_DIR=/tmp/runtime-root"
+  ],
+  "workspaceFolder": "/home/arcus_ws",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/arcus_ws,type=bind",
+  "postCreateCommand": "bash -lc 'source /opt/ros/jazzy/setup.bash && cd /home/arcus_ws && rosdep install --from-paths src --ignore-src -r -y && colcon build'",
+  "mounts": [
+    "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind",
+    "source=${localEnv:XAUTHORITY:-$HOME/.Xauthority},target=/root/.Xauthority,type=bind",
+    "source=/dev,target=/dev,type=bind"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ranch-hand-robotics.rde-ros-2",
+        "ms-vscode.cpptools",
+        "ms-python.python"
+      ]
+    }
+  }
+}
