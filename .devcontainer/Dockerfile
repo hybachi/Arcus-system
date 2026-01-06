@@ -1,18 +1,39 @@
-FROM ros:jazzy
+FROM ros:jazzy AS base
+SHELL ["/bin/bash", "-c"]
 
-SHELL [ "/bin/bash" , "-c" ]
-
-# Upgrade all packages
-RUN sudo apt update && sudo apt upgrade -y
-
-# Install essential packages
-RUN sudo apt install -y wget nano
-
-# Create overlay workspace
+ENV DEBIAN_FRONTEND=noninteractive
 WORKDIR /home/arcus_ws
 
-# Install required dependencies
-RUN apt update && apt install -y \
+# Base essentials
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+      wget nano \
+      python3-rosdep \
+      python3-colcon-common-extensions \
+      python3-vcstool \
+      build-essential \
+      libboost-all-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# rosdep setup
+RUN rosdep init || true && rosdep update
+
+# For GUI apps runtime
+RUN mkdir -p /tmp/runtime-root && chmod 700 /tmp/runtime-root
+ENV XDG_RUNTIME_DIR=/tmp/runtime-root
+
+# Bashrc setup
+RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> /root/.bashrc && \
+    echo "source /home/arcus_ws/install/setup.bash" >> /root/.bashrc && \
+    echo "export ROS_DOMAIN_ID=10" >> /root/.bashrc && \
+    echo "export RMW_IMPLEMENTATION=rmw_fastrtps_cpp" >> /root/.bashrc
+
+# -------------------------
+# Desktop (PC) target: simulation deps
+# -------------------------
+FROM base AS desktop
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-${ROS_DISTRO}-controller-manager \
     ros-${ROS_DISTRO}-ros2-control \
     ros-${ROS_DISTRO}-ros2-controllers \
@@ -22,23 +43,18 @@ RUN apt update && apt install -y \
     ros-${ROS_DISTRO}-serial-driver \
     ros-${ROS_DISTRO}-xacro \
     ros-${ROS_DISTRO}-rviz2 \
-    libboost-all-dev \
-    && rm -rf /var/lib/apt/lists/*
+  && rm -rf /var/lib/apt/lists/*
 
-# Install missing dependencies
-# RUN source /opt/ros/${ROS_DISTRO}/setup.bash && \
-#     rosdep install --from-paths src --ignore-src -r -y && \
-#     colcon build
+# -------------------------
+# Jetson target: NO simulation deps
+# -------------------------
+FROM base AS jetson
 
-RUN rosdep init || true && rosdep update
-
-# Create runtime directory for GUI apps
-RUN mkdir -p /tmp/runtime-root && chmod 700 /tmp/runtime-root
-
-# Add sourcing ROS to .bashrc
-RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
-RUN echo "source install/setup.bash" >> ~/.bashrc
-
-# Add ROS2 Domain ID to .bashrc
-RUN echo "ROS_DOMAIN_ID=10" >> ~/.bashrc
-RUN echo "RMW_IMPLEMENTATION=rmw_fastrtps_cpp" >> ~/.bashrc
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-${ROS_DISTRO}-controller-manager \
+    ros-${ROS_DISTRO}-ros2-control \
+    ros-${ROS_DISTRO}-ros2-controllers \
+    ros-${ROS_DISTRO}-serial-driver \
+    ros-${ROS_DISTRO}-xacro \
+    ros-${ROS_DISTRO}-rviz2 \
+  && rm -rf /var/lib/apt/lists/*
