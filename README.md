@@ -8,6 +8,28 @@ ARCUS is a ROS 2 based autonomous car platform, inspired by the **F1Tenth** and 
 
 ARCUS is structured to support both **simulation** and **physical deployment** on the *ARCUS_R1*.
 
+## ARCUS_R1
+
+A fully 3D printed RC car for running the ARCUS platform. The unmodified print files can be found [here](https://www.printables.com/model/1001592-voyager-mk1-3d-printed-110-offroad-rc-chassis).
+
+### Overview
+- Ackermann steering geometry
+- **Compute unit**: Jetson Orin Nano
+- **Motor Controller**: Flipsky 75100 pro v2.0 VESC
+- **Sensors**: RPLidar, BNO08X IMU, Camera (optional)
+- **Power**: 3S LiPo Battery
+
+<p align="center">
+  <img src="img/LowerLevel.png" width="600"/>
+  <br/>
+  <em>ARCUS_R1 – Lower Level Chassis</em>
+</p>
+
+<p align="center">
+  <img src="img/UpperLevel.png" width="600"/>
+  <br/>
+  <em>ARCUS_R1 – Upper Level Chassis</em>
+</p>
 
 ## Key Features
  
@@ -69,7 +91,42 @@ docker exec -it <container_name> bash
 ```
 You can now run ROS 2 commands directly inside the container.
 
----
+## Commands
+
+To launch simulation:
+```bash
+ros2 launch arcus_bringup gazebo.launch.py
+```
+
+To start RVIZ:
+```bash
+ros2 launch arcus_bringup display.launch.py
+```
+
+To launch hardware bringup:
+```bash
+ros2 launch arcus_bringup hardware.launch.py
+```
+
+To use teleoperation:
+```bash
+ros2 run arcus_teleop teleop_key
+```
+
+## Current Project Status
+
+### Implemented
+- Full simulation stack on Gazebo
+- Ackermann steering ros2_control controller
+- VESC ros2_control hardware interface
+- Teleoperation (simulation + hardware)
+- Consistent sim-to-real control architecture
+
+### Planned
+- ros2_control sensor interfaces
+- Mapping and localization
+- Autonomous driving behaviours
+
 
 ## License
 
